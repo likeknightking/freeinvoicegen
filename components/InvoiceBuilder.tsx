@@ -77,7 +77,7 @@ export default function InvoiceBuilder() {
     setValidationErrors([])
     setDownloading(true)
     try {
-      await generateInvoicePDF('invoice-preview', `${data.invoiceNumber || 'invoice'}.pdf`)
+      await generateInvoicePDF('invoice-preview', `${data.invoiceNumber || 'invoice'}.pdf`, data)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       alert(`Failed to generate PDF: ${message}`)
