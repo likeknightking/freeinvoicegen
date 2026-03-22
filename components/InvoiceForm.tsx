@@ -98,10 +98,13 @@ export default function InvoiceForm({ data, onChange }: Props) {
                 <button onClick={() => set('senderLogo', '')} aria-label="Remove logo" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">&times;</button>
               </div>
             ) : (
-              <label className="flex items-center gap-2 px-3 py-1.5 border border-dashed border-slate-300 rounded-lg text-xs text-slate-400 cursor-pointer hover:border-blue-300 hover:text-blue-400 transition-colors">
-                <Upload size={13} /> Upload Logo
-                <input type="file" accept="image/*" onChange={handleLogo} className="hidden" />
-              </label>
+              <div>
+                <label className="flex items-center gap-2 px-3 py-1.5 border border-dashed border-slate-300 rounded-lg text-xs text-slate-400 cursor-pointer hover:border-blue-300 hover:text-blue-400 transition-colors">
+                  <Upload size={13} /> Upload Logo
+                  <input type="file" accept="image/png,image/jpeg" onChange={handleLogo} className="hidden" />
+                </label>
+                <p className="text-[10px] text-slate-400 mt-1">PNG or JPG · Recommended: 200×200px</p>
+              </div>
             )}
           </div>
           <Field label="Name / Company"><input className={inputCls} placeholder="Your Name or Company" value={data.senderName} onChange={e => set('senderName', e.target.value)} /></Field>
