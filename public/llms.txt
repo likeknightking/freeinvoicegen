@@ -1,21 +1,31 @@
 # Invoice Generator
 > Free online tool to create professional PDF invoices instantly.
 
+## What it does
+Generates professional PDF invoices entirely in the browser. Fill in a form with your business details, client info, and line items — see a live preview — then download a polished PDF. No account, no server, no data stored.
+
 ## Features
-- Professional invoice form: sender, client, line items, tax, discount
+- Professional invoice form with sender, client, and line items
 - Live preview that updates as you type
-- Download as PDF (generated entirely in your browser)
+- Download as PDF (generated client-side with jsPDF)
 - 3 invoice templates: Clean, Classic, Modern
-- Company logo upload (client-side only)
+- Company logo upload (processed locally)
 - Multi-currency support (USD, EUR, GBP, INR, BRL, CAD, AUD)
 - Auto-calculated subtotal, tax, discount, grand total
-- Save/load draft invoices in localStorage
-- Auto-save every 30 seconds
+- Save/load draft invoices in browser storage
 - 100% client-side — no data sent to any server
-- No registration required
+
+## Who it's for
+- Freelancers billing clients
+- Small business owners
+- Contractors and consultants
+- Anyone who needs a quick, professional invoice
 
 ## URL
 https://freeinvoicegen.app
 
-## Usage
-Fill in your business details, client information, and line items. Choose a template, upload your logo, set currency and tax rate, then download a professional PDF invoice. Perfect for freelancers, contractors, and small businesses.
+## How to use
+Fill in your business details, client information, and line items. Choose a template, optionally upload your logo (PNG or JPG, 200x200px recommended), set currency and tax rate, then click Download PDF. Save drafts to continue later.
+
+## Pricing
+Completely free. No account needed. No limits.
