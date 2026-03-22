@@ -133,9 +133,13 @@ export default function InvoiceBuilder() {
 
       {/* Main layout */}
       <div className={`gap-6 ${showPreview ? 'grid grid-cols-1 lg:grid-cols-2' : 'block'}`}>
-        {/* Form */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-          <InvoiceForm data={data} onChange={setData} />
+        {/* Form + Ad sidebar on desktop */}
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <InvoiceForm data={data} onChange={setData} />
+          </div>
+          {/* Ad — visible while user fills form (mobile: after form, desktop: left column) */}
+          <AdSlot slot="4455667788" format="rectangle" className="mx-auto" />
         </div>
 
         {/* Preview — always rendered so PDF generation can access the DOM element */}
@@ -150,10 +154,6 @@ export default function InvoiceBuilder() {
           </div>
         </div>
       </div>
-
-      {/* Ad */}
-      <AdSlot slot="4455667788" format="horizontal" />
-      <AdSlot slot="8877665544" format="rectangle" className="mx-auto" />
     </div>
   )
 }
