@@ -15,13 +15,11 @@ export const metadata: Metadata = {
     description: 'Create and download PDF invoices instantly. No sign-up, 100% free.',
     type: 'website',
     url: 'https://www.freeinvoicegen.app',
-    images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Invoice Generator — Free & Private',
     description: 'Create professional PDF invoices. No account needed.',
-    images: ['/og-image.png'],
   },
   robots: { index: true, follow: true },
 }
