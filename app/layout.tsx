@@ -6,7 +6,7 @@ import Script from 'next/script'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://freeinvoicegen.app'),
+  metadataBase: new URL('https://www.freeinvoicegen.app'),
   title: 'Invoice Generator — Create Professional Invoices for Free',
   description:
     'Free invoice generator. Create, customize, and download professional PDF invoices in seconds. No sign-up required. 100% private — your data never leaves your browser.',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Invoice Generator — Free Professional Invoices',
     description: 'Create and download PDF invoices instantly. No sign-up, 100% free.',
     type: 'website',
-    url: 'https://freeinvoicegen.app',
+    url: 'https://www.freeinvoicegen.app',
     images: ['/og-image.png'],
   },
   twitter: {
