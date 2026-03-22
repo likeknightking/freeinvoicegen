@@ -4,23 +4,29 @@ export async function generateInvoicePDF(elementId: string, filename: string) {
     throw new Error('Invoice preview element not found. Cannot generate PDF.')
   }
 
-  // Ensure the element is visible for html2canvas (it may be off-screen for PDF generation)
-  const prevPosition = element.style.position
-  const prevLeft = element.style.left
-  const wasHidden = element.offsetParent === null
-  if (wasHidden) {
-    element.style.position = 'absolute'
-    element.style.left = '-9999px'
-    element.style.display = 'block'
-  }
+  const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+    import('jspdf'),
+    import('html2canvas'),
+  ])
+
+  // Clone the element into an isolated container outside the Tailwind DOM tree.
+  // This prevents html2canvas from encountering Tailwind v4's lab()/oklch() colors
+  // from parent/ancestor elements that it cannot parse.
+  const container = document.createElement('div')
+  container.style.position = 'fixed'
+  container.style.left = '-10000px'
+  container.style.top = '0'
+  container.style.width = `${element.scrollWidth}px`
+  container.style.background = '#ffffff'
+  container.style.zIndex = '-1'
+
+  const clone = element.cloneNode(true) as HTMLElement
+  clone.removeAttribute('id')
+  container.appendChild(clone)
+  document.body.appendChild(container)
 
   try {
-    const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
-      import('jspdf'),
-      import('html2canvas'),
-    ])
-
-    const canvas = await html2canvas(element, {
+    const canvas = await html2canvas(clone, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
@@ -50,11 +56,7 @@ export async function generateInvoicePDF(elementId: string, filename: string) {
 
     pdf.save(filename)
   } finally {
-    // Restore original styles
-    if (wasHidden) {
-      element.style.position = prevPosition
-      element.style.left = prevLeft
-      element.style.display = ''
-    }
+    // Clean up the isolated container
+    document.body.removeChild(container)
   }
 }
