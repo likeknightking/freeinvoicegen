@@ -8,12 +8,6 @@ interface Props {
   className?: string
 }
 
-const FORMAT_CLASSES: Record<string, string> = {
-  horizontal: 'h-[90px]  w-full',
-  rectangle:  'h-[250px] w-full max-w-[300px]',
-  article:    'h-[280px] w-full',
-}
-
 declare global {
   interface Window {
     adsbygoogle: unknown[]
@@ -30,19 +24,11 @@ export default function AdSlot({ slot, format = 'horizontal', className = '' }: 
     } catch { /* already initialized */ }
   }, [client])
 
-  if (!client) {
-    return (
-      <div
-        className={`flex items-center justify-center border border-dashed border-slate-200 bg-slate-50 rounded-lg text-slate-400 text-xs ${FORMAT_CLASSES[format]} ${className}`}
-        aria-hidden="true"
-      >
-        Ad · {format} · slot {slot}
-      </div>
-    )
-  }
+  // No AdSense configured = render nothing (no empty boxes in production)
+  if (!client) return null
 
   return (
-    <div className={`overflow-hidden ${FORMAT_CLASSES[format]} ${className}`}>
+    <div className={`overflow-hidden my-4 ${className}`}>
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
