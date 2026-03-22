@@ -15,7 +15,7 @@
 - No registration required
 
 ## URL
-https://www.freeinvoicegen.app
+https://freeinvoicegen.app
 
 ## Usage
 Fill in your business details, client information, and line items. Choose a template, upload your logo, set currency and tax rate, then download a professional PDF invoice. Perfect for freelancers, contractors, and small businesses.

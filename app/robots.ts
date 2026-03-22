@@ -1,6 +1,6 @@
 export default function robots() {
   return {
     rules: { userAgent: '*', allow: '/' },
-    sitemap: 'https://www.freeinvoicegen.app/sitemap.xml',
+    sitemap: 'https://freeinvoicegen.app/sitemap.xml',
   }
 }
