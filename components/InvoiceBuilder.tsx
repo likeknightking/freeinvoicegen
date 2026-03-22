@@ -77,9 +77,10 @@ export default function InvoiceBuilder() {
     setValidationErrors([])
     setDownloading(true)
     try {
-      await generateInvoicePDF('invoice-preview', `${data.invoiceNumber}.pdf`)
-    } catch {
-      alert('Failed to generate PDF. Please try again.')
+      await generateInvoicePDF('invoice-preview', `${data.invoiceNumber || 'invoice'}.pdf`)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error'
+      alert(`Failed to generate PDF: ${message}`)
     } finally {
       setDownloading(false)
     }
@@ -137,17 +138,17 @@ export default function InvoiceBuilder() {
           <InvoiceForm data={data} onChange={setData} />
         </div>
 
-        {/* Preview */}
-        {showPreview && (
-          <div className="space-y-2">
+        {/* Preview — always rendered so PDF generation can access the DOM element */}
+        <div className={showPreview ? 'space-y-2' : 'sr-only'} aria-hidden={!showPreview}>
+          {showPreview && (
             <p className="text-xs font-medium text-slate-400 uppercase tracking-wide px-1">Live Preview</p>
-            <div className="shadow-xl rounded-xl overflow-hidden border border-slate-200">
-              <div className="overflow-auto max-h-[900px]">
-                <InvoicePreview data={data} />
-              </div>
+          )}
+          <div className={showPreview ? 'shadow-xl rounded-xl overflow-hidden border border-slate-200' : ''}>
+            <div className={showPreview ? 'overflow-auto max-h-[900px]' : ''}>
+              <InvoicePreview data={data} />
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Ad */}
