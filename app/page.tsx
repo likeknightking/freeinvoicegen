@@ -79,6 +79,9 @@ export default function Home() {
 
           <InvoiceBuilder />
 
+          {/* Ad — between tool and SEO content */}
+          <AdSlot slot="5566778899" format="horizontal" />
+
           {/* SEO content */}
           <article className="mt-16 space-y-8 max-w-3xl mx-auto">
             <section>
