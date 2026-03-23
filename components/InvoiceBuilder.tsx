@@ -2,13 +2,27 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Download, Save, FolderOpen, Eye, EyeOff } from 'lucide-react'
-import { InvoiceData, DEFAULT_INVOICE, nextInvoiceNumber } from '@/lib/invoice-types'
+import { InvoiceData, DocMode, DEFAULT_INVOICE, nextInvoiceNumber, nextReceiptNumber, nextQuoteNumber } from '@/lib/invoice-types'
 import { generateInvoicePDF } from '@/lib/generate-pdf'
 import InvoiceForm from './InvoiceForm'
 import InvoicePreview from './InvoicePreview'
 import AdSlot from './AdSlot'
 
-const DRAFT_KEY = 'invoice_draft'
+interface BuilderProps {
+  mode?: DocMode
+}
+
+function getDraftKey(mode: DocMode) {
+  return mode === 'receipt' ? 'receipt_draft' : mode === 'quote' ? 'quote_draft' : 'invoice_draft'
+}
+
+function getNextNumber(mode: DocMode) {
+  return mode === 'receipt' ? nextReceiptNumber() : mode === 'quote' ? nextQuoteNumber() : nextInvoiceNumber()
+}
+
+function getDocLabel(mode: DocMode) {
+  return mode === 'receipt' ? 'Receipt' : mode === 'quote' ? 'Quote' : 'Invoice'
+}
 
 function validate(data: InvoiceData): string[] {
   const errors: string[] = []
@@ -22,7 +36,9 @@ function validate(data: InvoiceData): string[] {
   return errors
 }
 
-export default function InvoiceBuilder() {
+export default function InvoiceBuilder({ mode = 'invoice' }: BuilderProps) {
+  const DRAFT_KEY = getDraftKey(mode)
+  const docLabel = getDocLabel(mode)
   const [data, setData] = useState<InvoiceData>(DEFAULT_INVOICE)
   const [showPreview, setShowPreview] = useState(true)
   const [downloading, setDownloading] = useState(false)
@@ -33,17 +49,17 @@ export default function InvoiceBuilder() {
   const dataRef = useRef(data)
   dataRef.current = data
 
-  // Load draft on mount + init invoice number
+  // Load draft on mount + init document number
   useEffect(() => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY)
       if (raw) {
         setData(JSON.parse(raw))
       } else {
-        setData(prev => ({ ...prev, invoiceNumber: nextInvoiceNumber() }))
+        setData(prev => ({ ...prev, invoiceNumber: getNextNumber(mode) }))
       }
     } catch { /* ignore */ }
-  }, [])
+  }, [DRAFT_KEY, mode])
 
   // Auto-save every 30s — single stable interval using ref
   useEffect(() => {
@@ -77,7 +93,7 @@ export default function InvoiceBuilder() {
     setValidationErrors([])
     setDownloading(true)
     try {
-      await generateInvoicePDF('invoice-preview', `${data.invoiceNumber || 'invoice'}.pdf`, data)
+      await generateInvoicePDF('invoice-preview', `${data.invoiceNumber || docLabel.toLowerCase()}.pdf`, data, mode)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       alert(`Failed to generate PDF: ${message}`)
@@ -136,7 +152,7 @@ export default function InvoiceBuilder() {
         {/* Form + Ad sidebar on desktop */}
         <div className="space-y-4">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-            <InvoiceForm data={data} onChange={setData} />
+            <InvoiceForm data={data} onChange={setData} mode={mode} />
           </div>
           {/* Ad — visible while user fills form (mobile: after form, desktop: left column) */}
           <AdSlot slot="4455667788" format="rectangle" className="mx-auto" />
@@ -149,7 +165,7 @@ export default function InvoiceBuilder() {
           )}
           <div className={showPreview ? 'shadow-xl rounded-xl overflow-hidden border border-slate-200' : ''}>
             <div className={showPreview ? 'overflow-auto max-h-[900px]' : ''}>
-              <InvoicePreview data={data} />
+              <InvoicePreview data={data} mode={mode} />
             </div>
           </div>
         </div>

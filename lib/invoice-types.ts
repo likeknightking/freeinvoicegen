@@ -5,6 +5,8 @@ export interface LineItem {
   unitPrice: number
 }
 
+export type DocMode = 'invoice' | 'receipt' | 'quote'
+
 export interface InvoiceData {
   invoiceNumber: string
   invoiceDate: string
@@ -23,6 +25,12 @@ export interface InvoiceData {
   discountRate: number
   notes: string
   template: 'clean' | 'classic' | 'modern'
+  // Receipt-specific
+  paymentMethod: string
+  paymentDate: string
+  // Quote-specific
+  validUntil: string
+  termsAndConditions: string
 }
 
 export const CURRENCIES = [
@@ -81,6 +89,8 @@ export function nextInvoiceNumber(): string {
   }
 }
 
+export const PAYMENT_METHODS = ['Cash', 'Credit Card', 'Debit Card', 'Bank Transfer', 'PayPal', 'Other'] as const
+
 export const DEFAULT_INVOICE: InvoiceData = {
   invoiceNumber: 'INV-0001',
   invoiceDate: new Date().toISOString().split('T')[0],
@@ -99,4 +109,30 @@ export const DEFAULT_INVOICE: InvoiceData = {
   discountRate: 0,
   notes: '',
   template: 'clean',
+  paymentMethod: 'Cash',
+  paymentDate: new Date().toISOString().split('T')[0],
+  validUntil: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+  termsAndConditions: '',
+}
+
+export function nextReceiptNumber(): string {
+  try {
+    const stored = localStorage.getItem('rcp_counter')
+    const n = stored ? parseInt(stored) + 1 : 1
+    localStorage.setItem('rcp_counter', String(n))
+    return `RCP-${String(n).padStart(4, '0')}`
+  } catch {
+    return 'RCP-0001'
+  }
+}
+
+export function nextQuoteNumber(): string {
+  try {
+    const stored = localStorage.getItem('qte_counter')
+    const n = stored ? parseInt(stored) + 1 : 1
+    localStorage.setItem('qte_counter', String(n))
+    return `QTE-${String(n).padStart(4, '0')}`
+  } catch {
+    return 'QTE-0001'
+  }
 }

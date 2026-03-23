@@ -1,5 +1,6 @@
 import {
   InvoiceData,
+  DocMode,
   calcLineTotal,
   calcSubtotal,
   calcDiscount,
@@ -7,7 +8,7 @@ import {
   formatMoney,
 } from './invoice-types'
 
-export async function generateInvoicePDF(_elementId: string, filename: string, data?: InvoiceData) {
+export async function generateInvoicePDF(_elementId: string, filename: string, data?: InvoiceData, mode: DocMode = 'invoice') {
   if (!data) throw new Error('Invoice data is required.')
 
   const { default: jsPDF } = await import('jspdf')
@@ -69,11 +70,12 @@ export async function generateInvoicePDF(_elementId: string, filename: string, d
     if (data.senderEmail) { pdf.text(data.senderEmail, margin, infoY) }
   }
 
-  // "INVOICE" title — right side
+  // Document title — right side
+  const docTitle = mode === 'receipt' ? 'RECEIPT' : mode === 'quote' ? 'QUOTE' : 'INVOICE'
   pdf.setFontSize(24)
   pdf.setFont('helvetica', 'bold')
   pdf.setTextColor(isModern ? 255 : accentR, isModern ? 255 : accentG, isModern ? 255 : accentB)
-  pdf.text('INVOICE', pageWidth - margin, y + 8, { align: 'right' })
+  pdf.text(docTitle, pageWidth - margin, y + 8, { align: 'right' })
   pdf.setFontSize(10)
   pdf.setFont('helvetica', 'normal')
   pdf.setTextColor(isModern ? 191 : 148, isModern ? 219 : 163, isModern ? 254 : 184)
@@ -121,14 +123,46 @@ export async function generateInvoicePDF(_elementId: string, filename: string, d
   pdf.setFont('helvetica', 'normal')
   pdf.text(data.invoiceDate, pageWidth - margin, y + 5, { align: 'right' })
 
-  pdf.setFontSize(8)
-  pdf.setTextColor(148, 163, 184)
-  pdf.text('DUE DATE', pageWidth - margin, y + 12, { align: 'right' })
-  pdf.setFontSize(10)
-  pdf.setTextColor(239, 68, 68) // red-500
-  pdf.text(data.dueDate, pageWidth - margin, y + 17, { align: 'right' })
+  if (mode === 'invoice') {
+    pdf.setFontSize(8)
+    pdf.setTextColor(148, 163, 184)
+    pdf.text('DUE DATE', pageWidth - margin, y + 12, { align: 'right' })
+    pdf.setFontSize(10)
+    pdf.setTextColor(239, 68, 68) // red-500
+    pdf.text(data.dueDate, pageWidth - margin, y + 17, { align: 'right' })
+  } else if (mode === 'receipt') {
+    pdf.setFontSize(8)
+    pdf.setTextColor(148, 163, 184)
+    pdf.text('PAYMENT DATE', pageWidth - margin, y + 12, { align: 'right' })
+    pdf.setFontSize(10)
+    pdf.setTextColor(5, 150, 105) // emerald-600
+    pdf.text(data.paymentDate, pageWidth - margin, y + 17, { align: 'right' })
+    pdf.setFontSize(8)
+    pdf.setTextColor(148, 163, 184)
+    pdf.text('PAYMENT METHOD', pageWidth - margin, y + 24, { align: 'right' })
+    pdf.setFontSize(10)
+    pdf.setTextColor(30, 41, 59)
+    pdf.text(data.paymentMethod, pageWidth - margin, y + 29, { align: 'right' })
+  } else if (mode === 'quote') {
+    pdf.setFontSize(8)
+    pdf.setTextColor(148, 163, 184)
+    pdf.text('VALID UNTIL', pageWidth - margin, y + 12, { align: 'right' })
+    pdf.setFontSize(10)
+    pdf.setTextColor(37, 99, 235) // blue-600
+    pdf.text(data.validUntil, pageWidth - margin, y + 17, { align: 'right' })
+  }
 
   y += 28
+
+  // PAID stamp for receipts
+  if (mode === 'receipt') {
+    pdf.setFontSize(32)
+    pdf.setFont('helvetica', 'bold')
+    pdf.setTextColor(5, 150, 105) // emerald-600
+    pdf.text('PAID', pageWidth / 2, y + 4, { align: 'center' })
+    y += 14
+    pdf.setFont('helvetica', 'normal')
+  }
 
   // --- ITEMS TABLE ---
   const tableHead = [['Description', 'Qty', 'Unit Price', 'Total']]
@@ -244,6 +278,27 @@ export async function generateInvoicePDF(_elementId: string, filename: string, d
     pdf.setTextColor(71, 85, 105) // slate-600
     const noteLines = pdf.splitTextToSize(data.notes, contentWidth)
     pdf.text(noteLines, margin, y)
+  }
+
+  // Terms & Conditions (quote mode)
+  if (mode === 'quote' && data.termsAndConditions) {
+    y += 10
+    pdf.setDrawColor(226, 232, 240)
+    pdf.setLineWidth(0.3)
+    pdf.line(margin, y, pageWidth - margin, y)
+    y += 8
+
+    pdf.setFontSize(8)
+    pdf.setFont('helvetica', 'bold')
+    pdf.setTextColor(148, 163, 184)
+    pdf.text('TERMS & CONDITIONS', margin, y)
+
+    y += 5
+    pdf.setFontSize(9)
+    pdf.setFont('helvetica', 'normal')
+    pdf.setTextColor(71, 85, 105)
+    const termsLines = pdf.splitTextToSize(data.termsAndConditions, contentWidth)
+    pdf.text(termsLines, margin, y)
   }
 
   pdf.save(filename)

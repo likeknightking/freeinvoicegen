@@ -1,11 +1,12 @@
 'use client'
 
 import { Plus, Trash2, Upload } from 'lucide-react'
-import { InvoiceData, LineItem, CURRENCIES, calcLineTotal, formatMoney } from '@/lib/invoice-types'
+import { InvoiceData, LineItem, DocMode, CURRENCIES, PAYMENT_METHODS, calcLineTotal, formatMoney } from '@/lib/invoice-types'
 
 interface Props {
   data: InvoiceData
   onChange: (data: InvoiceData) => void
+  mode?: DocMode
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -20,7 +21,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const inputCls = 'w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition-colors'
 const areaCls  = `${inputCls} resize-none`
 
-export default function InvoiceForm({ data, onChange }: Props) {
+export default function InvoiceForm({ data, onChange, mode = 'invoice' }: Props) {
   function set<K extends keyof InvoiceData>(key: K, value: InvoiceData[K]) {
     onChange({ ...data, [key]: value })
   }
@@ -72,18 +73,41 @@ export default function InvoiceForm({ data, onChange }: Props) {
         </div>
       </div>
 
-      {/* Invoice meta — responsive grid */}
+      {/* Document meta — responsive grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Field label="Invoice #">
+        <Field label={mode === 'receipt' ? 'Receipt #' : mode === 'quote' ? 'Quote #' : 'Invoice #'}>
           <input className={inputCls} value={data.invoiceNumber} onChange={e => set('invoiceNumber', e.target.value)} />
         </Field>
         <Field label="Issue Date">
           <input type="date" className={inputCls} value={data.invoiceDate} onChange={e => set('invoiceDate', e.target.value)} />
         </Field>
-        <Field label="Due Date">
-          <input type="date" className={inputCls} value={data.dueDate} onChange={e => set('dueDate', e.target.value)} />
-        </Field>
+        {mode === 'invoice' && (
+          <Field label="Due Date">
+            <input type="date" className={inputCls} value={data.dueDate} onChange={e => set('dueDate', e.target.value)} />
+          </Field>
+        )}
+        {mode === 'receipt' && (
+          <Field label="Payment Date">
+            <input type="date" className={inputCls} value={data.paymentDate} onChange={e => set('paymentDate', e.target.value)} />
+          </Field>
+        )}
+        {mode === 'quote' && (
+          <Field label="Valid Until">
+            <input type="date" className={inputCls} value={data.validUntil} onChange={e => set('validUntil', e.target.value)} />
+          </Field>
+        )}
       </div>
+
+      {/* Receipt: Payment Method */}
+      {mode === 'receipt' && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <Field label="Payment Method">
+            <select className={inputCls} value={data.paymentMethod} onChange={e => set('paymentMethod', e.target.value)}>
+              {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </Field>
+        </div>
+      )}
 
       {/* Sender & Client */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -228,6 +252,13 @@ export default function InvoiceForm({ data, onChange }: Props) {
       <Field label="Notes / Payment Terms">
         <textarea className={areaCls} rows={2} placeholder="e.g. Payment due within 30 days. Thank you for your business!" value={data.notes} onChange={e => set('notes', e.target.value)} />
       </Field>
+
+      {/* Quote: Terms & Conditions */}
+      {mode === 'quote' && (
+        <Field label="Terms & Conditions">
+          <textarea className={areaCls} rows={3} placeholder="e.g. This quote is valid for 30 days. Prices are subject to change after the validity period." value={data.termsAndConditions} onChange={e => set('termsAndConditions', e.target.value)} />
+        </Field>
+      )}
     </div>
   )
 }

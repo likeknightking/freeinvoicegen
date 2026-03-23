@@ -1,12 +1,13 @@
 'use client'
 
 import {
-  InvoiceData, calcLineTotal, calcSubtotal, calcDiscount, calcTotal,
+  InvoiceData, DocMode, calcLineTotal, calcSubtotal, calcDiscount, calcTotal,
   formatMoney,
 } from '@/lib/invoice-types'
 
 interface Props {
   data: InvoiceData
+  mode?: DocMode
 }
 
 // All colors as hex — html2canvas cannot parse Tailwind v4 lab()/oklch() colors
@@ -28,7 +29,8 @@ const C = {
   emerald600: '#059669',
 }
 
-export default function InvoicePreview({ data }: Props) {
+export default function InvoicePreview({ data, mode = 'invoice' }: Props) {
+  const docTitle = mode === 'receipt' ? 'RECEIPT' : mode === 'quote' ? 'QUOTE' : 'INVOICE'
   const subtotal           = calcSubtotal(data.items)
   const discount           = calcDiscount(subtotal, data.discountRate)
   const discountedSubtotal = subtotal - discount
@@ -83,7 +85,7 @@ export default function InvoicePreview({ data }: Props) {
         </div>
         <div style={{ textAlign: 'right' }}>
           <p style={{ fontSize: 30, fontWeight: 700, letterSpacing: '-0.025em', color: isModern ? C.white : C.blue600, margin: 0 }}>
-            INVOICE
+            {docTitle}
           </p>
           <p style={{ fontSize: 14, marginTop: 4, color: isModern ? C.blue100 : C.slate500 }}>#{data.invoiceNumber}</p>
         </div>
@@ -93,7 +95,7 @@ export default function InvoicePreview({ data }: Props) {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 32 }}>
         <div>
           <p style={{ fontSize: 12, fontWeight: 600, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
-            Bill To
+            {mode === 'quote' ? 'Quote For' : 'Bill To'}
           </p>
           <p style={{ fontWeight: 600, color: C.slate800, margin: 0 }}>{data.clientName || 'Client Name'}</p>
           <p style={{ fontSize: 14, color: C.slate500, whiteSpace: 'pre-line', margin: '2px 0 0' }}>{data.clientAddress}</p>
@@ -104,12 +106,52 @@ export default function InvoicePreview({ data }: Props) {
             <p style={{ fontSize: 12, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Issue Date</p>
             <p style={{ fontSize: 14, fontWeight: 500, margin: '2px 0 0' }}>{data.invoiceDate}</p>
           </div>
-          <div>
-            <p style={{ fontSize: 12, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Due Date</p>
-            <p style={{ fontSize: 14, fontWeight: 500, color: C.red500, margin: '2px 0 0' }}>{data.dueDate}</p>
-          </div>
+          {mode === 'invoice' && (
+            <div>
+              <p style={{ fontSize: 12, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Due Date</p>
+              <p style={{ fontSize: 14, fontWeight: 500, color: C.red500, margin: '2px 0 0' }}>{data.dueDate}</p>
+            </div>
+          )}
+          {mode === 'receipt' && (
+            <>
+              <div style={{ marginBottom: 8 }}>
+                <p style={{ fontSize: 12, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Payment Date</p>
+                <p style={{ fontSize: 14, fontWeight: 500, color: C.emerald600, margin: '2px 0 0' }}>{data.paymentDate}</p>
+              </div>
+              <div>
+                <p style={{ fontSize: 12, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Payment Method</p>
+                <p style={{ fontSize: 14, fontWeight: 500, margin: '2px 0 0' }}>{data.paymentMethod}</p>
+              </div>
+            </>
+          )}
+          {mode === 'quote' && (
+            <div>
+              <p style={{ fontSize: 12, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>Valid Until</p>
+              <p style={{ fontSize: 14, fontWeight: 500, color: C.blue600, margin: '2px 0 0' }}>{data.validUntil}</p>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* PAID stamp for receipts */}
+      {mode === 'receipt' && (
+        <div style={{ textAlign: 'center', marginBottom: 16 }}>
+          <span style={{
+            display: 'inline-block',
+            border: `3px solid ${C.emerald600}`,
+            color: C.emerald600,
+            fontSize: 28,
+            fontWeight: 700,
+            padding: '4px 24px',
+            borderRadius: 8,
+            letterSpacing: '0.1em',
+            transform: 'rotate(-5deg)',
+            opacity: 0.85,
+          }}>
+            PAID
+          </span>
+        </div>
+      )}
 
       {/* Items table */}
       <table style={{ width: '100%', marginBottom: 24, fontSize: 14, borderCollapse: 'collapse' }}>
@@ -169,6 +211,16 @@ export default function InvoicePreview({ data }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Terms & Conditions (quote mode) */}
+      {mode === 'quote' && data.termsAndConditions && (
+        <div style={{ borderTop: `1px solid ${C.slate200}`, paddingTop: 16, marginBottom: 16 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: C.slate400, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
+            Terms &amp; Conditions
+          </p>
+          <p style={{ fontSize: 14, color: C.slate600, whiteSpace: 'pre-line', margin: 0 }}>{data.termsAndConditions}</p>
+        </div>
+      )}
 
       {/* Notes */}
       {data.notes && (
