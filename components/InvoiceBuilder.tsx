@@ -155,7 +155,7 @@ export default function InvoiceBuilder({ mode = 'invoice' }: BuilderProps) {
             <InvoiceForm data={data} onChange={setData} mode={mode} />
           </div>
           {/* Ad — visible while user fills form (mobile: after form, desktop: left column) */}
-          <AdSlot slot="4455667788" format="rectangle" className="mx-auto" />
+          <AdSlot slot="5629428982" format="rectangle" className="mx-auto" />
         </div>
 
         {/* Preview — always rendered so PDF generation can access the DOM element */}

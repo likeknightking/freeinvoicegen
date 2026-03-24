@@ -122,7 +122,7 @@ export default function QuoteGeneratorPage() {
           <InvoiceBuilder mode="quote" />
 
           {/* Ad — between tool and SEO content */}
-          <AdSlot slot="5566778899" format="horizontal" />
+          <AdSlot slot="4097556163" format="horizontal" />
 
           {/* SEO content */}
           <article className="mt-16 space-y-8 max-w-3xl mx-auto">
@@ -141,7 +141,7 @@ export default function QuoteGeneratorPage() {
             </section>
 
             {/* In-article ad */}
-            <AdSlot slot="1029384756" format="article" />
+            <AdSlot slot="3737762812" format="article" />
 
             <section>
               <h2 className="text-2xl font-bold text-slate-900 mb-3">Essential Components of an Effective Business Quote</h2>
