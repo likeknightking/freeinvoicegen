@@ -1,6 +1,7 @@
 import InvoiceBuilder from '@/components/InvoiceBuilder'
 import AdSlot from '@/components/AdSlot'
 import DocNav from '@/components/DocNav'
+import Footer from '@/components/Footer'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -104,6 +105,10 @@ export default function Home() {
             <p className="text-slate-500">Create professional PDF invoices instantly. No account needed. 100% private.</p>
           </div>
 
+          <p className="text-slate-600 leading-relaxed mb-8 text-center max-w-2xl mx-auto">
+            Getting paid starts with a professional invoice. This tool lets you create polished, itemized PDF invoices in seconds without creating an account or paying for a subscription. Add your business details, logo, line items, and tax calculations, then download a ready-to-send PDF. Everything runs in your browser, so your financial data stays private.
+          </p>
+
           <InvoiceBuilder />
 
           {/* Ad — between tool and SEO content */}
@@ -165,9 +170,7 @@ export default function Home() {
           </article>
         </main>
 
-        <footer className="border-t border-slate-200 mt-16 py-8 text-center bg-white">
-          <p className="text-slate-400 text-sm">Invoice Generator — Free professional invoices. No sign-up required.</p>
-        </footer>
+        <Footer />
       </div>
     </>
   )
