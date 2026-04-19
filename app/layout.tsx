@@ -2,8 +2,15 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Script from 'next/script'
+import Analytics from '@/components/Analytics'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const otherMeta: Record<string, string> = {
+  'google-adsense-account': 'ca-pub-7584346505499429',
+}
+if (process.env.NEXT_PUBLIC_SC_VERIFICATION) otherMeta['google-site-verification'] = process.env.NEXT_PUBLIC_SC_VERIFICATION
+if (process.env.NEXT_PUBLIC_BING_VERIFICATION) otherMeta['msvalidate.01'] = process.env.NEXT_PUBLIC_BING_VERIFICATION
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://freeinvoicegen.app'),
@@ -23,7 +30,7 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: 'https://freeinvoicegen.app' },
   robots: { index: true, follow: true },
-  other: { 'google-adsense-account': 'ca-pub-7584346505499429' },
+  other: otherMeta,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -31,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${inter.className} bg-slate-50 text-slate-900 antialiased min-h-screen`}>
         {children}
+        <Analytics />
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
           <Script
             async

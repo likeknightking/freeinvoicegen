@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Download, Save, FolderOpen, Eye, EyeOff } from 'lucide-react'
 import { InvoiceData, DocMode, DEFAULT_INVOICE, nextInvoiceNumber, nextReceiptNumber, nextQuoteNumber } from '@/lib/invoice-types'
 import { generateInvoicePDF } from '@/lib/generate-pdf'
+import { trackToolUsed, trackDownload } from '@/lib/track'
 import InvoiceForm from './InvoiceForm'
 import InvoicePreview from './InvoicePreview'
 import AdSlot from './AdSlot'
@@ -22,6 +23,14 @@ function getNextNumber(mode: DocMode) {
 
 function getDocLabel(mode: DocMode) {
   return mode === 'receipt' ? 'Receipt' : mode === 'quote' ? 'Quote' : 'Invoice'
+}
+
+function getCreateEvent(mode: DocMode) {
+  return mode === 'receipt' ? 'receipt_create' : mode === 'quote' ? 'quote_create' : 'invoice_create'
+}
+
+function getPdfEvent(mode: DocMode) {
+  return mode === 'receipt' ? 'receipt_pdf' : mode === 'quote' ? 'quote_pdf' : 'invoice_pdf'
 }
 
 function validate(data: InvoiceData): string[] {
@@ -61,6 +70,12 @@ export default function InvoiceBuilder({ mode = 'invoice' }: BuilderProps) {
     } catch { /* ignore */ }
   }, [DRAFT_KEY, mode])
 
+  // Fire tool_used once on mount (per mode)
+  useEffect(() => {
+    trackToolUsed(getCreateEvent(mode))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Auto-save every 30s — single stable interval using ref
   useEffect(() => {
     const id = setInterval(() => {
@@ -94,6 +109,7 @@ export default function InvoiceBuilder({ mode = 'invoice' }: BuilderProps) {
     setDownloading(true)
     try {
       await generateInvoicePDF('invoice-preview', `${data.invoiceNumber || docLabel.toLowerCase()}.pdf`, data, mode)
+      trackDownload(getPdfEvent(mode), 'pdf')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       alert(`Failed to generate PDF: ${message}`)
