@@ -107,7 +107,7 @@ export default function QuoteGeneratorPage() {
       <div className="min-h-screen bg-slate-50">
         <header className="bg-white border-b border-slate-200 px-4 py-4 shadow-sm">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-lg font-bold text-slate-800">Quote Generator</h1>
+            <div className="text-lg font-bold text-slate-800">Quote Generator</div>
           </div>
         </header>
 
@@ -115,7 +115,7 @@ export default function QuoteGeneratorPage() {
           <DocNav />
 
           <div className="mb-6 text-center">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Free Quote &amp; Estimate Generator</h2>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Free Quote &amp; Estimate Generator</h1>
             <p className="text-slate-500">Create professional PDF quotes with validity dates and terms. No sign-up required.</p>
           </div>
 
@@ -181,10 +181,6 @@ export default function QuoteGeneratorPage() {
           </article>
         </main>
         <Footer />
-
-        <footer className="border-t border-slate-200 mt-16 py-8 text-center bg-white">
-          <p className="text-slate-400 text-sm">Quote Generator — Free professional quotes and estimates. No sign-up required.</p>
-        </footer>
       </div>
     </>
   )

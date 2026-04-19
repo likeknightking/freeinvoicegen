@@ -93,7 +93,7 @@ export default function Home() {
       <div className="min-h-screen bg-slate-50">
         <header className="bg-white border-b border-slate-200 px-4 py-4 shadow-sm">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-lg font-bold text-slate-800">Invoice Generator</h1>
+            <div className="text-lg font-bold text-slate-800">Invoice Generator</div>
           </div>
         </header>
 
@@ -101,7 +101,7 @@ export default function Home() {
           <DocNav />
 
           <div className="mb-6 text-center">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Free Invoice Generator</h2>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Free Invoice Generator</h1>
             <p className="text-slate-500">Create professional PDF invoices instantly. No account needed. 100% private.</p>
           </div>
 

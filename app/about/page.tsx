@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import DocNav from '@/components/DocNav'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function About() {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-12">
+        <DocNav />
         <h1 className="text-3xl font-bold text-slate-900 mb-8">About FreeInvoiceGen.app</h1>
 
         <div className="prose prose-slate max-w-none space-y-6 text-slate-600 leading-relaxed">

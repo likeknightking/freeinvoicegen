@@ -107,7 +107,7 @@ export default function ReceiptGeneratorPage() {
       <div className="min-h-screen bg-slate-50">
         <header className="bg-white border-b border-slate-200 px-4 py-4 shadow-sm">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-lg font-bold text-slate-800">Receipt Generator</h1>
+            <div className="text-lg font-bold text-slate-800">Receipt Generator</div>
           </div>
         </header>
 
@@ -115,7 +115,7 @@ export default function ReceiptGeneratorPage() {
           <DocNav />
 
           <div className="mb-6 text-center">
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">Free Receipt Generator</h2>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Free Receipt Generator</h1>
             <p className="text-slate-500">Create professional payment receipts with a PAID stamp. Download as PDF instantly.</p>
           </div>
 
@@ -180,10 +180,6 @@ export default function ReceiptGeneratorPage() {
           </article>
         </main>
         <Footer />
-
-        <footer className="border-t border-slate-200 mt-16 py-8 text-center bg-white">
-          <p className="text-slate-400 text-sm">Receipt Generator — Free professional payment receipts. No sign-up required.</p>
-        </footer>
       </div>
     </>
   )

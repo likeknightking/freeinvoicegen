@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import DocNav from '@/components/DocNav'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function Terms() {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-12">
+        <DocNav />
         <h1 className="text-3xl font-bold text-slate-900 mb-8">Terms of Service</h1>
         <p className="text-slate-500 text-sm mb-8">Last updated: March 2026</p>
 

@@ -105,16 +105,18 @@ export default function InvoiceBuilder({ mode = 'invoice' }: BuilderProps) {
   return (
     <div className="space-y-4">
       {/* Validation errors */}
-      {validationErrors.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
-          <p className="font-semibold mb-1">Please fix the following before downloading:</p>
-          <ul className="list-disc list-inside space-y-0.5">
-            {validationErrors.map((err, i) => (
-              <li key={i}>{err}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div aria-live="polite" aria-atomic="true">
+        {validationErrors.length > 0 && (
+          <div role="alert" className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+            <p className="font-semibold mb-1">Please fix the following before downloading:</p>
+            <ul className="list-disc list-inside space-y-0.5">
+              {validationErrors.map((err, i) => (
+                <li key={i}>{err}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
 
       {/* Action bar */}
       <div className="flex flex-wrap items-center gap-2 bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm">

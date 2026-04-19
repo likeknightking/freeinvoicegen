@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     title: 'Invoice Generator — Free & Private',
     description: 'Create professional PDF invoices. No account needed.',
   },
+  alternates: { canonical: 'https://freeinvoicegen.app' },
   robots: { index: true, follow: true },
   other: { 'google-adsense-account': 'ca-pub-7584346505499429' },
 }
